@@ -1,3 +1,15 @@
+AuthenticatesRpi
+================
+
 Provides a consistent structure for web app authentication of RPI people.
 
 Or at least it will, once I implement it.
+
+
+Example
+=======
+
+Example goes here.
+
+
+Copyright (c) 2009 Michael DiTore, released under the MIT license
