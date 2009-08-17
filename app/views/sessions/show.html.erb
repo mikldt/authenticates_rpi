@@ -1,0 +1,11 @@
+<% if logged_in %>
+(<%= link_to 'logout', session_path, :confirm => 'Are you sure?', :method => :delete %>)
+Here is your session data, <%= logged_in_user%>
+<% else %>
+You are not logged in, but here is your session data anyway:
+<% end %>
+<pre>
+<%= session.to_yaml %>
+</pre>
+Ohmygodcocaine: <%= ohmygodcocaine %>
+
