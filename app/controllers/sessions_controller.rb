@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
         # This person is in the db, let them in.
         # TODO: Hook for going to a frontpage, or the place we were last at.
         session[:member_id] = user.id
-        flash[:notice] = "Logged in successfully - member=#{user.id} (#{user.name})"
+        flash[:notice] = "Logged in successfully - member=#{user.id} (#{user.fullname})"
         redirect_to root_path
       end
     end
@@ -47,8 +47,6 @@ class SessionsController < ApplicationController
 
   #GET account_url
   def show
-    @foobar = "dude:"+ohmygodcocaine
-    @haha = "what!"
     #@foo=request.request_uri
   end
 
