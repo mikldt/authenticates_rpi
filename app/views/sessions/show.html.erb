@@ -1,9 +1,13 @@
+<p>
 <% if logged_in %>
 (<%= link_to 'logout', session_path, :confirm => 'Are you sure?', :method => :delete %>)
-Here is your session data, <%= logged_in_user%>
+Here is your session data, <%= logged_in_user.first %> (<%= logged_in_user.gender_string %>)
 <% else %>
-You are not logged in, but here is your session data anyway:
+You are not logged in, but we will give you your session data anyway.
 <% end %>
+</p>
+<% user=logged_in_user %>
+<p>You are <%= admin_logged_in ? '' : 'not' %> an admin.</p>
 <pre>
 <%= session.to_yaml %>
 </pre>

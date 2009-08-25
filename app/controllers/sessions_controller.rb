@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   before_filter CASClient::Frameworks::Rails::Filter, :only => :new
 #  before_filter :require_login, :only => [ :destroy ]
 #  before_filter :require_login_or_first_user, :except => [ :destroy, :new, :show ]
-
+  unloadable
   #GET new_account_url
   def new
     # Will be forced to authenticate before getting here.
@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
       else
         # This person is in the db, let them in.
         # TODO: Hook for going to a frontpage, or the place we were last at.
-        session[:member_id] = user.id
+        session[:username] = user.username
         flash[:notice] = "Logged in successfully - member=#{user.id} (#{user.fullname})"
         redirect_to root_path
       end
@@ -47,6 +47,7 @@ class SessionsController < ApplicationController
 
   #GET account_url
   def show
+    #render :text => "loaded ok"
     #@foo=request.request_uri
   end
 
@@ -68,7 +69,7 @@ class SessionsController < ApplicationController
   #DELETE account_url
   def destroy
     # clear out the session and log out of CAS
-    session[:member_id] = nil
+    session[:username] = nil
     CASClient::Frameworks::Rails::Filter.logout(self)
 
     #Something of a dirty hack to clear all the CAS info and log out from the server,
