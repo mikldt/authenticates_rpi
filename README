@@ -3,13 +3,34 @@ AuthenticatesRpi
 
 Provides a consistent structure for web app authentication of RPI people.
 
-Or at least it will, once I implement it.
+Authentication is accomplished through CAS using the rubyCAS-client, and model-level write authorization is provided by the authenticates_access plugin.
 
+Full installation procedure and usage documentation is available on this project's github wiki: http://wiki.github.com/mikldt/authenticates_rpi
 
 Example
 =======
 
-Example goes here.
+Configuration is done by one line in a controller (in most cases it makes
+sense to do this in the ApplicationController for your app):
 
+  authenticate_rpi Person, :username_field => 'username', :admin_field => 'is_admin' 
+
+Where the Person is the model representing the site's users, and the username returned by CAS matches :username_field for the user that is logging in. :admin_field is an optional argument, and if provided, it's value will determine the method or field on the user model that identifies site administrators. This is a convenience feature. 
+
+This makes the following methods available to controllers and views:
+* logged_in?
+* admin_logged_in?
+* current_user
+
+Login is available via the session controller provided by this plugin.
+
+Login link:
+link_to "login", new_session_path 
+
+Logout link:
+link_to 'logout', session_path, :method => :delete 
+
+
+See the wiki for details.
 
 Copyright (c) 2009 Michael DiTore, released under the MIT license

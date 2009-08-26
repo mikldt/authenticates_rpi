@@ -45,12 +45,12 @@ module AuthenticatesRpi
     def self.included(base)
       base.helper :all
       base.before_filter "set_up_accessor"
-      base.helper_method :logged_in, :admin_logged_in, :go_to_login,
-                         :logged_in_user
+      base.helper_method :logged_in?, :admin_logged_in?, :go_to_login,
+                         :icurrent_user
     end
 
     # Methods for interacting with session data
-    def logged_in
+    def logged_in?
       if session[:username].nil?
         false
       else
@@ -58,7 +58,7 @@ module AuthenticatesRpi
       end
     end
 
-    def admin_logged_in
+    def admin_logged_in?
       if session[:username].nil?
         #No current user
         logger.warn "No current user"
@@ -69,7 +69,7 @@ module AuthenticatesRpi
         false
       else
         #Check the app-configured admin field
-        if logged_in_user.send admin_field
+        if current_user.send admin_field
           true
         else
           false
@@ -77,14 +77,14 @@ module AuthenticatesRpi
       end
     end
 
-    def logged_in_user
+    def current_user
       if session[:username].nil?
         logger.warn "No current user"
         false
       else
         p = find_user_by_username(session[:username])
         if p.nil?
-          raise "User not found, yo."
+          raise "User "+session[:username]+" not found!"
         else
           p
         end
@@ -99,7 +99,7 @@ module AuthenticatesRpi
 
     # Preparation for authenticates_access plugin
     def set_up_accessor
-      ActiveRecord::Base.accessor = logged_in_user
+      ActiveRecord::Base.accessor = current_user
     end
 
     #Finds a person by username, using the configurable username field.
@@ -108,13 +108,13 @@ module AuthenticatesRpi
     end
 
     def logged_in_filter
-      unless logged_in
+      unless logged_in?
         go_to_login
       end
     end
 
     def admin_filter
-      unless admin_logged_in
+      unless admin_logged_in?
         forbidden
       end
     end
