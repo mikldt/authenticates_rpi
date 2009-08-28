@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   def new
     # Will be forced to authenticate before getting here.
 
-    if logged_in
+    if logged_in?
       # The user is already logged in, so let's not mess with the session.
       flash[:notice] = "You are already logged in!"
       redirect_to root_path
@@ -45,39 +45,23 @@ class SessionsController < ApplicationController
 #    end
   end
 
-  #GET account_url
-  def show
-    #render :text => "loaded ok"
-    #@foo=request.request_uri
-  end
 
-# #  #GET edit_account_url
-#   def edit
-#     #TODO: secure and make proper, use update
-#     if not params[:username].nil? and User.current=User.find_by_username(params[:username])
-#       flash[:notice] = ["Welcome", User.current.first].join(', ')
-#     elsif not params[:username].nil?
-#       flash[:notice] = ["Sorry - login error! Please see the webmaster... TODO"]
-#       redirect_to "/"
-#     end
-#   end
-
-#  #PUT account_url 
-#  def update
-#  end
+ #  #GET edit_account_url
+   def edit
+     #TODO: secure and make proper, use update
+     if not params[:username].nil? and User.current=User.find_by_username(params[:username])
+       flash[:notice] = ["Welcome", User.current.first].join(', ')
+     elsif not params[:username].nil?
+       flash[:notice] = ["Sorry - login error! Please see the webmaster... TODO"]
+       redirect_to "/"
+     end
+   end
 
   #DELETE account_url
   def destroy
     # clear out the session and log out of CAS
     session[:username] = nil
     CASClient::Frameworks::Rails::Filter.logout(self)
-
-    #Something of a dirty hack to clear all the CAS info and log out from the server,
-    #as the logout method of rubycas-client is currently in a state of failure.
-    #reset_session
-    #redirect_to CASClient::Frameworks::Rails::Filter.client.logout_url(request.referer) 
-
-    #CASClient::Frameworks::Rails::Filter.logout(self)
   end
 
 end

@@ -4,9 +4,9 @@ module AuthenticatesRpi
   module ActMethods
     def authenticate_rpi ( user_class, opts={} )
       include InstanceMethods
-      logger.info "----------------------------------------------"
-      logger.info "HELLO! autheticates_rpi mixed in to "+self.class.name +
-       " on Rails " + Rails::VERSION::STRING
+      # logger.info "----------------------------------------------"
+      # logger.info "autheticates_rpi mixed in ( on Rails " + 
+      #   Rails::VERSION::STRING + " )"
 
       #Username field is required; used to look up the value from CAS.
       username_field = opts[:username_field] || "username"
@@ -46,7 +46,7 @@ module AuthenticatesRpi
       base.helper :all
       base.before_filter "set_up_accessor"
       base.helper_method :logged_in?, :admin_logged_in?, :go_to_login,
-                         :icurrent_user
+                         :current_user
     end
 
     # Methods for interacting with session data
@@ -61,11 +61,11 @@ module AuthenticatesRpi
     def admin_logged_in?
       if session[:username].nil?
         #No current user
-        logger.warn "No current user"
         false
       elsif admin_field.nil?
         #Site not configured for admin behavior
-        logger.warn "No admin field"
+        logger.warn "AuthenticatesRpi checking for admin, " +
+          "but no admin field is configured. "
         false
       else
         #Check the app-configured admin field
@@ -79,7 +79,6 @@ module AuthenticatesRpi
 
     def current_user
       if session[:username].nil?
-        logger.warn "No current user"
         false
       else
         p = find_user_by_username(session[:username])
@@ -92,7 +91,7 @@ module AuthenticatesRpi
     end
 
     def go_to_login
-      redirect_to :controller => 'sessions', :action => 'begin'
+      redirect_to :controller => 'sessions', :action => 'new'
     end
 
     protected
