@@ -114,7 +114,11 @@ module AuthenticatesRpi
 
     def admin_filter
       unless admin_logged_in?
-        forbidden
+        unless logged_in?
+          go_to_login
+        else
+          forbidden
+        end
       end
     end
 
@@ -123,8 +127,9 @@ module AuthenticatesRpi
     protected
     #TODO: Real error handling
     def forbidden
-      logger.warn "FORBIDDEN - REDIRECTING"
-      redirect_to :controller => 'sessions', :action => 'forbidden'
+      logger.warn "User forbidden."
+      flash[:notice] = "Sorry, you do not have permission to view that page."
+      redirect_to root_path
     end
   end
 end
