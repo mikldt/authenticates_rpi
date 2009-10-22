@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
       redirect_to root_path
     else
       # The user needs to be logged in.
-      user = Person.find_by_username(session[:cas_user])
+      user = find_user_by_username(session[:cas_user])
       if user.nil?
         # We don't know this person.
         # TODO: What to do in this case.
@@ -22,8 +22,8 @@ class SessionsController < ApplicationController
       else
         # This person is in the db, let them in.
         # TODO: Hook for going to a frontpage, or the place we were last at.
-        session[:username] = user.username
-        flash[:notice] = "Logged in successfully - member=#{user.id} (#{user.fullname})"
+        session[:username] = user.send(username_field)
+        flash[:notice] = "Logged in successfully - #{session[:username]}"
         redirect_to root_path
       end
     end
