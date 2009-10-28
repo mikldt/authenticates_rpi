@@ -14,6 +14,8 @@ module AuthenticatesRpi
       #all users recieve false for admin_logged_in.
       admin_field = opts[:admin_field]
 
+      autoadd = opts[:autoadd_users] || false
+
       #Argument Validation
       #TODO: proper exceptions to raise, not just runtime junk
       unless user_class.instance_of?(Class)
@@ -32,7 +34,8 @@ module AuthenticatesRpi
       write_inheritable_attribute :user_class, user_class
       write_inheritable_attribute :username_field, username_field
       write_inheritable_attribute :admin_field, admin_field
-      class_inheritable_reader :user_class, :username_field, :admin_field
+      write_inheritable_attribute :autoadd_users, autoadd
+      class_inheritable_reader :user_class, :username_field, :admin_field, :autoadd_users
     end
  end
 
@@ -121,6 +124,15 @@ module AuthenticatesRpi
         end
       end
     end
+
+    def new_user_action(username)
+      # If the plugin is configured to auto-add new users, do it.
+      if autoadd_users
+        u = user_class.new(username_field => username)
+        u.save
+      end
+    end
+
 
     # Error Handling
 

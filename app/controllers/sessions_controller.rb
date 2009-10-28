@@ -14,10 +14,19 @@ class SessionsController < ApplicationController
     else
       # The user needs to be logged in.
       user = find_user_by_username(session[:cas_user])
+
+      # New user, the plugin knows what to do.
+      if user.nil?
+        # Delegate to authenticates_rpi.rb
+        new_user_action(session[:cas_user])
+        # See if they can log in now.
+        user = find_user_by_username(session[:cas_user])
+      end
+
       if user.nil?
         # We don't know this person.
         # TODO: What to do in this case.
-        flash[:notice] = "Sorry, we don't talk to strangers."
+        flash[:notice] = "Sorry, your login does not appear to be valid."
         redirect_to root_path
       else
         # This person is in the db, let them in.
