@@ -10,11 +10,22 @@ module AuthenticatesRpi
 
       #Username field is required; used to look up the value from CAS.
       username_field = opts[:username_field] || "username"
+      
+      #Fields that we'll fill in from LDAP, in addition to username_field
+      fullname_field = opts[:fullname_field] || nil
+      firstname_field = opts[:firstname_field] || nil
+      lastname_field = opts[:lastname_field] || nil
+
       #Admin field is optional if the site has admins. If none specified,
       #all users recieve false for admin_logged_in.
       admin_field = opts[:admin_field]
 
       autoadd = opts[:autoadd_users] || false
+
+      ldap_address = opts[:ldap_address] || nil
+      ldap_port = opts[:ldap_port] || 389
+      ldap_dn = opts[:ldap_dn] || nil
+      ldap_username_field = opts[:ldap_username_field] || 'uid'
 
       #Argument Validation
       #TODO: proper exceptions to raise, not just runtime junk
@@ -33,9 +44,18 @@ module AuthenticatesRpi
       #Argument Storage
       write_inheritable_attribute :user_class, user_class
       write_inheritable_attribute :username_field, username_field
+      write_inheritable_attribute :fullname_field, fullname_field
+      write_inheritable_attribute :firstname_field, firstname_field
+      write_inheritable_attribute :lastame_field, lastname_field
       write_inheritable_attribute :admin_field, admin_field
       write_inheritable_attribute :autoadd_users, autoadd
-      class_inheritable_reader :user_class, :username_field, :admin_field, :autoadd_users
+      write_inheritable_attribute :ldap_address, ldap_address
+      write_inheritable_attribute :ldap_port, ldap_port
+      write_inheritable_attribute :ldap_dn, ldap_dn
+      write_inheritable_attribute :ldap_username_field, ldap_username_field
+      class_inheritable_reader :user_class, :username_field, :fullname_field,
+        :firstname_field, :lastname_field, :admin_field, :autoadd_users,
+        :ldap_address, :ldap_port, :ldap_dn, :ldap_username_field
     end
  end
 
@@ -129,6 +149,35 @@ module AuthenticatesRpi
       # If the plugin is configured to auto-add new users, do it.
       if autoadd_users
         u = user_class.new(username_field => username)
+
+        # Fetch additional data from LDAP if you like
+        logger.info "created the user"
+        unless(ldap_address.nil? || ldap_dn.nil?)
+          require 'ldap'
+          logger.info 'Making LDAP query for new user: '+username
+          ldap_conn = LDAP::Conn.new(ldap_address, ldap_port)
+          ldap_conn.set_option(LDAP::LDAP_OPT_PROTOCOL_VERSION, 3)
+          ldap_conn.bind
+          results = ldap_conn.search2(ldap_username_field+"="+username+","+
+                                      ldap_dn, LDAP::LDAP_SCOPE_SUBTREE, 
+                                      '(cn=*)')
+          # Add the data to the user if t
+          unless(results.first.nil?)
+            first = results.first['givenName'].first.split(' ').first
+            last = results.first['sn'].first
+            # full = results.first['gecos'].first
+            if fullname_field
+              u.send('attribute=', fullname_field, first + ' ' + last)
+            end
+            if firstname_field
+              u.send('attribute=', firstname_field, first)
+            end
+            if fullname_field
+              u.send('attribute=', lastname_field, last)
+            end
+          end
+        end
+
         u.save
       end
     end
