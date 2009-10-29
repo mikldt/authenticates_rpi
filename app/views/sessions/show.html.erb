@@ -1,16 +1,18 @@
-<p>
 <% if logged_in? %>
-(<%= link_to 'logout', session_path, :confirm => 'Are you sure?', :method => :delete %>)
-Here is your session data, <%= current_user.name %>
-<% else %>
-You are not logged in, but we will give you your session data anyway.
-<% end %>
-</p>
-<% user=current_user %>
-<p>You are <%= admin_logged_in? ? '' : 'not' %> an admin.</p>
-      #Admin field is optional if the site has admins. If none specified,
-      #all users recieve false for admin_logged_in.
-<pre>
-<%= session.to_yaml %>
-</pre>
+  <p>
+    You are currently logged in as <%= current_user.name %> 
+    (<%= link_to 'logout', session_path, :confirm => 'Are you sure?', :method => :delete %>).
+  </p>
+  <% if admin_logged_in? %>
+    <p>You are logged in with administrator privileges on this application.</p>
+  <% end %>
 
+  <% if admin_logged_in? && params['debug'] # For debug only %>
+    <p>Session data:</p>
+    <pre>
+    <%= session.to_yaml %>
+    </pre>
+  <% end %>
+<% else %>
+    You are not logged in. <%= link_to 'Log In', new_session_path %>.
+<% end %>
