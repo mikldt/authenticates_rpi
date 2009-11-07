@@ -115,6 +115,11 @@ module AuthenticatesRpi
 
     def go_to_login
       redirect_to :controller => 'sessions', :action => 'new'
+
+      # Before we go, save the current (full) path.
+      # This will allow us to get back to the requested page
+      # once we've authenticated.
+      session[:page_before_login] = request.request_uri
     end
 
     protected

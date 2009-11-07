@@ -30,10 +30,17 @@ class SessionsController < ApplicationController
         redirect_to root_path
       else
         # This person is in the db, let them in.
-        # TODO: Hook for going to a frontpage, or the place we were last at.
         session[:username] = user.send(username_field)
         flash[:notice] = "Logged in successfully - #{session[:username]}"
-        redirect_to root_path
+
+        # This session variable may be set before redirecting to session/new
+        # in order to get the user back to the page they were trying to get at.
+        if session[:page_before_login]
+          redirect_to session[:page_before_login]
+          session[:page_before_login] = nil
+        else
+          redirect_to root_path
+        end
       end
     end
 #Tidbits of old code:
