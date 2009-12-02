@@ -1,0 +1,5 @@
+Choose a user to pretend to be.
+<% form_tag :action => 'change_user', :method => :post do %>
+  <%= collection_select "username",nil, @users, @username_field, @name_field %>
+  <%= submit_tag "SU" %>
+<% end %>

@@ -7,7 +7,7 @@
     <p>You are logged in with administrator privileges on this application.</p>
   <% end %>
 
-  <% if admin_logged_in? && params['debug'] # For debug only %>
+  <% if @show_debug %>
     <p>Session data:</p>
     <pre>
     <%= session.to_yaml %>

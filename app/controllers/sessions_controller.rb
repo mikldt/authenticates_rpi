@@ -80,4 +80,42 @@ class SessionsController < ApplicationController
     CASClient::Frameworks::Rails::Filter.logout(self)
   end
 
+  # These methods let you pretend to be someone else
+  # Security critical, so modify with caution!
+  def sudo
+    # Note: we add the session parameter admin_under_sudo. This should
+    # NEVER be accessed outside of this controller, as doing that or
+    # accessing the actuall session username variable directly would
+    # defeat the purpose of encapsulating the login as it really would be.
+    if !admin_logged_in? && !session[:admin_under_sudo] = 1
+      flash[:notice] = "Access denied!"
+      redirect_to root_url
+    elsif !sudo_enabled
+      flash[:notice] = "SUDO Feature disabled"
+      redirect_to root_url
+    else
+      @users = user_class.find(:all)
+      @username_field = username_field
+      @name_field = fullname_field || username_field
+    end
+  end
+
+  def change_user
+   if !admin_logged_in? && !session[:admin_under_sudo] = 1
+      flash[:notice] = "Access denied!"
+      redirect_to root_url
+    elsif !sudo_enabled
+      flash[:notice] = "SUDO Feature disabled"
+      redirect_to root_url
+    else
+      # Again, we have to be really careful with the next 2 lines!
+      session[:username] = params[:username]
+      session[:admin_under_sudo] = 1
+      redirect_to root_url
+    end
+  end
+
+  def show
+    @show_debug = params[:debug] && (admin_logged_in? || session[:admin_under_sudo])
+  end
 end

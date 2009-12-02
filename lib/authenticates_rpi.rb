@@ -21,6 +21,7 @@ module AuthenticatesRpi
       admin_field = opts[:admin_field]
 
       autoadd = opts[:autoadd_users] || false
+      sudo_enabled = opts[:sudo_enabled] || false
 
       ldap_address = opts[:ldap_address] || nil
       ldap_port = opts[:ldap_port] || 389
@@ -49,13 +50,14 @@ module AuthenticatesRpi
       write_inheritable_attribute :lastame_field, lastname_field
       write_inheritable_attribute :admin_field, admin_field
       write_inheritable_attribute :autoadd_users, autoadd
+      write_inheritable_attribute :sudo_enabled, sudo_enabled
       write_inheritable_attribute :ldap_address, ldap_address
       write_inheritable_attribute :ldap_port, ldap_port
       write_inheritable_attribute :ldap_dn, ldap_dn
       write_inheritable_attribute :ldap_username_field, ldap_username_field
       class_inheritable_reader :user_class, :username_field, :fullname_field,
         :firstname_field, :lastname_field, :admin_field, :autoadd_users,
-        :ldap_address, :ldap_port, :ldap_dn, :ldap_username_field
+        :ldap_address, :ldap_port, :ldap_dn, :ldap_username_field, :sudo_enabled
     end
  end
 
