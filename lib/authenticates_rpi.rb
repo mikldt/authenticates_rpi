@@ -155,7 +155,14 @@ module AuthenticatesRpi
     def new_user_action(username)
       # If the plugin is configured to auto-add new users, do it.
       if autoadd_users
-        u = user_class.new(username_field => username)
+        u = user_class.new
+
+        # Use caution while auth is bypassed (the user can't just edit
+        # their own rcsid, so its important that username comes from a
+        # good source)
+        u.bypass_auth do
+          u.send(username_field+'=', username)
+        end
 
         # Fetch additional data from LDAP if you like
         logger.info "created the user"
