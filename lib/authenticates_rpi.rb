@@ -58,7 +58,7 @@ module AuthenticatesRpi
       write_inheritable_attribute :ldap_port, ldap_port
       write_inheritable_attribute :ldap_dn, ldap_dn
       write_inheritable_attribute :ldap_username_field, ldap_username_field
-      write_inheritable_attribute :ldap_email_field
+      write_inheritable_attribute :ldap_email_field, ldap_email_field
       class_inheritable_reader :user_class, :username_field, :fullname_field,
         :firstname_field, :lastname_field, :admin_field, :autoadd_users,
         :ldap_address, :ldap_port, :ldap_dn, :ldap_username_field, 
