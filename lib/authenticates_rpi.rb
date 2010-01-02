@@ -186,7 +186,7 @@ module AuthenticatesRpi
             if firstname_field
               u.send('attribute=', firstname_field, first)
             end
-            if fullname_field
+            if lastname_field
               u.send('attribute=', lastname_field, last)
             end
           end
