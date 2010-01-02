@@ -15,6 +15,7 @@ module AuthenticatesRpi
       fullname_field = opts[:fullname_field] || nil
       firstname_field = opts[:firstname_field] || nil
       lastname_field = opts[:lastname_field] || nil
+      email_field = opts[:email_field] || nil
 
       #Admin field is optional if the site has admins. If none specified,
       #all users recieve false for admin_logged_in.
@@ -27,6 +28,7 @@ module AuthenticatesRpi
       ldap_port = opts[:ldap_port] || 389
       ldap_dn = opts[:ldap_dn] || nil
       ldap_username_field = opts[:ldap_username_field] || 'uid'
+      ldap_email_field = opts[:ldap_email_field] || 'mailAlternateAddress'
 
       #Argument Validation
       #TODO: proper exceptions to raise, not just runtime junk
@@ -47,7 +49,8 @@ module AuthenticatesRpi
       write_inheritable_attribute :username_field, username_field
       write_inheritable_attribute :fullname_field, fullname_field
       write_inheritable_attribute :firstname_field, firstname_field
-      write_inheritable_attribute :lastame_field, lastname_field
+      write_inheritable_attribute :email_field, email_field
+      write_inheritable_attribute :lastname_field, lastname_field
       write_inheritable_attribute :admin_field, admin_field
       write_inheritable_attribute :autoadd_users, autoadd
       write_inheritable_attribute :sudo_enabled, sudo_enabled
@@ -55,9 +58,11 @@ module AuthenticatesRpi
       write_inheritable_attribute :ldap_port, ldap_port
       write_inheritable_attribute :ldap_dn, ldap_dn
       write_inheritable_attribute :ldap_username_field, ldap_username_field
+      write_inheritable_attribute :ldap_email_field
       class_inheritable_reader :user_class, :username_field, :fullname_field,
         :firstname_field, :lastname_field, :admin_field, :autoadd_users,
-        :ldap_address, :ldap_port, :ldap_dn, :ldap_username_field, :sudo_enabled
+        :ldap_address, :ldap_port, :ldap_dn, :ldap_username_field, 
+        :sudo_enabled, :email_field, :ldap_email_field
     end
  end
 
@@ -179,6 +184,7 @@ module AuthenticatesRpi
           unless(results.first.nil?)
             first = results.first['givenName'].first.split(' ').first
             last = results.first['sn'].first
+            email = results.first[ldap_email_field]
             # full = results.first['gecos'].first
             if fullname_field
               u.send('attribute=', fullname_field, first + ' ' + last)
@@ -188,6 +194,9 @@ module AuthenticatesRpi
             end
             if lastname_field
               u.send('attribute=', lastname_field, last)
+            end
+            if email_field and !email.nil?
+              u.send('attribute=', email_field, email)
             end
           end
         end
