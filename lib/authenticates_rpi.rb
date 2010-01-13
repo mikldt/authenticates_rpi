@@ -133,7 +133,10 @@ module AuthenticatesRpi
 
     # Preparation for authenticates_access plugin
     def set_up_accessor
-      ActiveRecord::Base.accessor = current_user
+      if (Module.constants.include? 'AuthenticatesRpi' &&
+        ActiveRecord::Base.methods.include? ('accessor='))
+        ActiveRecord::Base.accessor = current_user
+      end
     end
 
     #Finds a person by username, using the configurable username field.
@@ -161,11 +164,16 @@ module AuthenticatesRpi
       # If the plugin is configured to auto-add new users, do it.
       if autoadd_users
         u = user_class.new
-
+        # If we have authenticates_access, we need to bypass it in order
+        # to change the username.
         # Use caution while auth is bypassed (the user can't just edit
         # their own rcsid, so its important that username comes from a
         # good source)
-        u.bypass_auth do
+        if u.methods.include? 'bypass_auth'
+          u.bypass_auth do
+            u.send(username_field+'=', username)
+          end
+        else
           u.send(username_field+'=', username)
         end
 
