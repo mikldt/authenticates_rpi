@@ -31,7 +31,7 @@ class SessionsController < ApplicationController
       else
         # This person is in the db, let them in.
         session[:username] = user.send(username_field)
-        flash[:notice] = "Logged in successfully - #{session[:username]}"
+        flash[:notice] = "Logged in successfully - #{current_user_display_name}"
 
         # This session variable may be set before redirecting to session/new
         # in order to get the user back to the page they were trying to get at.

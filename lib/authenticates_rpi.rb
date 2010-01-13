@@ -76,7 +76,7 @@ module AuthenticatesRpi
       base.helper :all
       base.before_filter "set_up_accessor"
       base.helper_method :logged_in?, :admin_logged_in?, :go_to_login,
-                         :current_user
+                         :current_user, :current_user_display_name
     end
 
     # Methods for interacting with session data
@@ -107,6 +107,10 @@ module AuthenticatesRpi
       end
     end
 
+    # Method to return the object representing the logged in user,
+    # or false if there's nobody logged in. For general use, and included
+    # as a helper. This should be the only method used for getting the
+    # current user.
     def current_user
       if session[:username].nil?
         false
@@ -118,6 +122,26 @@ module AuthenticatesRpi
           p
         end
       end
+    end
+
+    # Figures out a 'display name' for the user, in the following priority
+    # 1. If there's a fullname field defined, use that
+    # 2. If there are first and last names, use them
+    # 3. Just use the username, because its unique.
+    def current_user_display_name
+      user = current_user
+      if fullname_field
+        n = user.send(fullname_field)
+        return n unless n.blank?
+      end
+
+      if firstname_field && lastname_field
+        f = user.send(firstname_field)
+        l = user.send(lastname_field)
+        return f + " " + l unless f.blank? || l.blank?
+      end
+
+      return user.send(username_field)
     end
 
     def go_to_login

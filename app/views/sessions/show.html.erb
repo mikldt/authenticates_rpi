@@ -1,6 +1,6 @@
 <% if logged_in? %>
   <p>
-    You are currently logged in as <%= current_user.name %> 
+    You are currently logged in as <%= current_user_display_name %> 
     (<%= link_to 'logout', session_path, :confirm => 'Are you sure?', :method => :delete %>).
   </p>
   <% if admin_logged_in? %>
