@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "app/controllers/sessions_controller.rb",
      "app/views/sessions/show.html.erb",
      "app/views/sessions/sudo.html.erb",
+     "authenticates_rpi.gemspec",
      "config/routes.rb",
      "init.rb",
      "install.rb",
