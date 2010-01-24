@@ -21,3 +21,18 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('README')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "authenticates_rpi"
+    gemspec.summary = "CAS Authentication and Authorization on Rails!"
+    gemspec.description = "Rails plugin to manage CAS, Authentication, and LDAP name info"
+    gemspec.email = "mikldt@gmail.com"
+    gemspec.homepage = "http://github.com/mikldt/authenticates_rpi"
+    gemspec.authors = ["Michael DiTore"]
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
+end
+
