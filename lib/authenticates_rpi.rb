@@ -158,7 +158,7 @@ module AuthenticatesRpi
     # Preparation for authenticates_access plugin
     def set_up_accessor
       #TODO: is this good enought of a check?
-      if (Module.constants.include? 'AuthenticatesAccess'
+      if (Module.constants.include? 'AuthenticatesAccess')
         ActiveRecord::Base.accessor = current_user
       end
     end
