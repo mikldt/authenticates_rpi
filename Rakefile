@@ -32,6 +32,7 @@ begin
     gemspec.homepage = "http://github.com/mikldt/authenticates_rpi"
     gemspec.authors = ["Michael DiTore"]
   end
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"
 end
