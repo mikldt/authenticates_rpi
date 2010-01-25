@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{authenticates_rpi}
-  s.version = "0.0.3"
+  s.version = "0.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Michael DiTore"]
@@ -26,9 +26,9 @@ Gem::Specification.new do |s|
      "app/views/sessions/sudo.html.erb",
      "authenticates_rpi.gemspec",
      "config/routes.rb",
-     "init.rb",
      "install.rb",
      "lib/authenticates_rpi.rb",
+     "rails/init.rb",
      "tasks/authenticates_rpi_tasks.rake",
      "test/authenticates_rpi_test.rb",
      "test/test_helper.rb",
